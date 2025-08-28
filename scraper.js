@@ -7,11 +7,19 @@ async function scrape() {
 	const page = await browser.newPage();
 	await page.goto(url, { waitUntil: 'networkidle2' });
 
+	// 调试：截图页面
+	await page.screenshot({ path: 'debug.png' });
+
 	// 提取 IP 和位置信息
 	const data = await page.evaluate(() => {
 		const result = [];
-		// 找到 DNS 记录表格
-		const rows = document.querySelectorAll('table tbody tr');
+		const table = document.querySelector('table');
+		if (!table) {
+			console.log('未找到表格');
+			return result;
+		}
+		const rows = table.querySelectorAll('tbody tr');
+		console.log('表格行数:', rows.length);
 		rows.forEach(row => {
 			const cells = row.querySelectorAll('td');
 			if (cells.length >= 4) {
@@ -19,7 +27,6 @@ async function scrape() {
 				if (type === 'A') {
 					const ip = cells[1].innerText.trim();
 					const location = cells[3].innerText.trim();
-					// location 可能是 "国家, 城市" 格式
 					let country = location.split(',')[0].trim();
 					result.push({ ip, country, location });
 				}
@@ -30,7 +37,6 @@ async function scrape() {
 
 	await browser.close();
 
-	// 输出为 JSON 文件
 	fs.writeFileSync('output.json', JSON.stringify(data, null, 2), 'utf-8');
 	console.log('已保存到 output.json');
 }
