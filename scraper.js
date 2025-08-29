@@ -43,51 +43,37 @@ async function scrape() {
 	const html = await page.content();
 	fs.writeFileSync('output.html', html, 'utf-8');
 
-	// 提取所有A记录（IPv4）
+	// 优化提取所有A记录（IPv4），遍历所有表格，最大化获取数据
 	const data = await page.evaluate(() => {
 		const result = [];
-		// 找到所有A记录表格
-		const h2s = Array.from(document.querySelectorAll('h2.font-semibold'));
-		let aTable = null;
-		for (const h2 of h2s) {
-			if (h2.textContent.includes('A records')) {
-				// A记录表格紧跟在h2后
-				let next = h2.nextElementSibling;
-				while (next && next.tagName !== 'DIV') next = next.nextElementSibling;
-				if (next) {
-					aTable = next.querySelector('table');
-					break;
-				}
-			}
-		}
-		if (!aTable) return result;
-		const rows = aTable.querySelectorAll('tbody tr');
-		rows.forEach(row => {
-			const cells = row.querySelectorAll('td');
-			if (cells.length >= 2) {
-				// IPv4地址
-				const ip = cells[1].querySelector('span')?.textContent.trim() || cells[1].textContent.trim();
-				// 位置信息
-				let location = '';
-				// 查找下一个隐藏行（class="hidden"），里面有详细位置
-				let nextRow = row.nextElementSibling;
-				if (nextRow && nextRow.classList.contains('hidden')) {
-					const locTable = nextRow.querySelector('table');
-					if (locTable) {
-						// 取第一个 Location 行
-						const locTrs = locTable.querySelectorAll('tr');
-						for (const tr of locTrs) {
-							const th = tr.querySelector('th');
-							const td = tr.querySelector('td');
-							if (th && td && th.textContent.trim() === 'Location') {
-								location = td.textContent.trim();
-								break;
+		const tables = Array.from(document.querySelectorAll('table'));
+		tables.forEach(table => {
+			const rows = table.querySelectorAll('tbody tr');
+			rows.forEach(row => {
+				const cells = row.querySelectorAll('td');
+				if (cells.length >= 2) {
+					let ip = cells[1].querySelector('span')?.textContent.trim() || cells[1].textContent.trim();
+					// 只保留IPv4
+					if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return;
+					let location = '';
+					let nextRow = row.nextElementSibling;
+					if (nextRow && nextRow.classList.contains('hidden')) {
+						const locTable = nextRow.querySelector('table');
+						if (locTable) {
+							const locTrs = locTable.querySelectorAll('tr');
+							for (const tr of locTrs) {
+								const th = tr.querySelector('th');
+								const td = tr.querySelector('td');
+								if (th && td && th.textContent.trim() === 'Location') {
+									location = td.textContent.trim();
+									break;
+								}
 							}
 						}
 					}
+					result.push({ ip, location });
 				}
-				result.push({ ip, location });
-			}
+			});
 		});
 		return result;
 	});
