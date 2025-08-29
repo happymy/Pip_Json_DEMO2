@@ -3,7 +3,7 @@ name: Scrape and Commit
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * *' # 每天凌晨2点自动运行
+    - cron: '0 */2 * * *' # 每2个小时自动运行
 
 jobs:
   scrape:
