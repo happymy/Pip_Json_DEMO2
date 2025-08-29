@@ -29,37 +29,45 @@ async function scrape() {
 
 	await page.goto(url, { waitUntil: 'networkidle2' });
 
-	// 模拟滚动
-	await page.evaluate(() => {
-		window.scrollBy(0, 200);
-	});
+	// 等待 DNS 记录表格渲染（A记录表格标题）
+	await page.waitForSelector('h2.font-semibold', { timeout: 15000 });
+	// 再等待表格内容出现
+	await page.waitForSelector('table', { timeout: 15000 });
 
-	// 随机等待
-	await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000));
+	// 模拟滚动和随机等待
+	await page.evaluate(() => { window.scrollBy(0, 400); });
+	await new Promise(r => setTimeout(r, 2000 + Math.random() * 2000));
 
 	await page.screenshot({ path: 'debug.png' });
-	// 保存页面 HTML 便于调试
+	// 保存渲染后的 HTML
 	const html = await page.content();
 	fs.writeFileSync('output.html', html, 'utf-8');
 
-	// 提取 IP 和位置信息
+	// 提取所有A记录（IPv4）
 	const data = await page.evaluate(() => {
 		const result = [];
-		const table = document.querySelector('table');
-		if (!table) {
-			return result;
+		// 找到所有A记录表格
+		const h2s = Array.from(document.querySelectorAll('h2.font-semibold'));
+		let aTable = null;
+		for (const h2 of h2s) {
+			if (h2.textContent.includes('A records')) {
+				// A记录表格紧跟在h2后
+				let next = h2.nextElementSibling;
+				while (next && next.tagName !== 'DIV') next = next.nextElementSibling;
+				if (next) {
+					aTable = next.querySelector('table');
+					break;
+				}
+			}
 		}
-		const rows = table.querySelectorAll('tbody tr');
+		if (!aTable) return result;
+		const rows = aTable.querySelectorAll('tbody tr');
 		rows.forEach(row => {
 			const cells = row.querySelectorAll('td');
-			if (cells.length >= 4) {
-				const type = cells[0].innerText.trim();
-				if (type === 'A') {
-					const ip = cells[1].innerText.trim();
-					const location = cells[3].innerText.trim();
-					let country = location.split(',')[0].trim();
-					result.push({ ip, country, location });
-				}
+			if (cells.length >= 2) {
+				// IPv4地址
+				const ip = cells[1].querySelector('span')?.textContent.trim() || cells[1].textContent.trim();
+				result.push({ ip });
 			}
 		});
 		return result;
