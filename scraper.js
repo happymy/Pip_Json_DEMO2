@@ -38,6 +38,9 @@ async function scrape() {
 	await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000));
 
 	await page.screenshot({ path: 'debug.png' });
+	// 保存页面 HTML 便于调试
+	const html = await page.content();
+	fs.writeFileSync('output.html', html, 'utf-8');
 
 	// 提取 IP 和位置信息
 	const data = await page.evaluate(() => {
