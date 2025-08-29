@@ -67,7 +67,26 @@ async function scrape() {
 			if (cells.length >= 2) {
 				// IPv4地址
 				const ip = cells[1].querySelector('span')?.textContent.trim() || cells[1].textContent.trim();
-				result.push({ ip });
+				// 位置信息
+				let location = '';
+				// 查找下一个隐藏行（class="hidden"），里面有详细位置
+				let nextRow = row.nextElementSibling;
+				if (nextRow && nextRow.classList.contains('hidden')) {
+					const locTable = nextRow.querySelector('table');
+					if (locTable) {
+						// 取第一个 Location 行
+						const locTrs = locTable.querySelectorAll('tr');
+						for (const tr of locTrs) {
+							const th = tr.querySelector('th');
+							const td = tr.querySelector('td');
+							if (th && td && th.textContent.trim() === 'Location') {
+								location = td.textContent.trim();
+								break;
+							}
+						}
+					}
+				}
+				result.push({ ip, location });
 			}
 		});
 		return result;
