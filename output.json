@@ -1,42 +1,14 @@
 [
   {
-    "ip": "54.38.159.25",
-    "location": "Koeln, Nordrhein-Westfalen, Germany"
-  },
-  {
-    "ip": "45.147.199.13",
-    "location": "Dronten, Flevoland, Netherlands"
-  },
-  {
-    "ip": "193.33.153.151",
-    "location": "Amsterdam, Noord-Holland, Netherlands"
-  },
-  {
-    "ip": "91.107.160.25",
-    "location": "Falkenstein/Vogtland, Sachsen, Germany"
-  },
-  {
-    "ip": "23.108.217.103",
-    "location": "Amsterdam, Noord-Holland, Netherlands"
-  },
-  {
-    "ip": "2.59.38.46",
-    "location": "Nieuwegein, Utrecht, Netherlands"
-  },
-  {
     "ip": "5.10.215.26",
     "location": "Kalenborn-Scheuern, Rheinland-Pfalz, Germany"
   },
   {
-    "ip": "77.238.231.179",
-    "location": "Amsterdam, Noord-Holland, Netherlands"
+    "ip": "54.38.159.25",
+    "location": "Koeln, Nordrhein-Westfalen, Germany"
   },
   {
     "ip": "206.166.251.92",
     "location": "Sheridan, Wyoming, United States"
-  },
-  {
-    "ip": "91.107.251.113",
-    "location": "Gunzenhausen, Bayern, Germany"
   }
 ]
