@@ -1,10 +1,10 @@
 [
   {
-    "ip": "54.38.159.25",
-    "location": "Koeln, Nordrhein-Westfalen, Germany"
-  },
-  {
     "ip": "5.10.215.26",
     "location": "Kalenborn-Scheuern, Rheinland-Pfalz, Germany"
+  },
+  {
+    "ip": "54.38.159.25",
+    "location": "Koeln, Nordrhein-Westfalen, Germany"
   }
 ]
