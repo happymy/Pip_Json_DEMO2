@@ -1,17 +1,5 @@
 [
   {
-    "ip": "45.82.14.221",
-    "location": "Sankt-Peterburg, Sankt-Peterburg, Russia"
-  },
-  {
-    "ip": "91.208.162.68",
-    "location": "Chisinau, Chisinau, Moldova"
-  },
-  {
-    "ip": "45.86.86.53",
-    "location": "Chisinau, Chisinau, Moldova"
-  },
-  {
     "ip": "5.10.215.26",
     "location": "Kalenborn-Scheuern, Rheinland-Pfalz, Germany"
   },
@@ -20,8 +8,12 @@
     "location": "Astana, Astana, Kazakhstan"
   },
   {
-    "ip": "86.104.73.185",
-    "location": "Almaty, Almaty City, Kazakhstan"
+    "ip": "45.86.86.53",
+    "location": "Chisinau, Chisinau, Moldova"
+  },
+  {
+    "ip": "91.208.162.68",
+    "location": "Chisinau, Chisinau, Moldova"
   },
   {
     "ip": "91.208.206.103",
